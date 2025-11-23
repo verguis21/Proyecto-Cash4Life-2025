@@ -1,8 +1,6 @@
 streamlit
 pandas
-
 scikit-learn
-
-```text
+numpy
 requests
 streamlit-lottie
