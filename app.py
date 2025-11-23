@@ -117,9 +117,9 @@ if df is not None:
             with st.expander("👥 Ver Equipo de Investigación"):
                 st.write("""
                 * Bernabé Arce, James Franco
+                * Carrascal Carranza, Hetzer
                 * Coronado Medina, Sergio Adrian
                 * Enriquez Cabanillas, César
-                * Carrascal Carranza, Hetzer
                 * Lázaro Velásquez, Jesús Alberto
                 * Martino López, Marielsys Paola
                 * Mori Galarza, Franco
@@ -205,6 +205,7 @@ if df is not None:
 
 else:
     st.error("⚠️ Error Crítico: No se encontró el dataset en el repositorio.")
+
 
 
 
