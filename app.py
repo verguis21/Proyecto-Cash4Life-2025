@@ -66,10 +66,10 @@ st.sidebar.image("https://cdn-icons-png.flaticon.com/512/1086/1086581.png", widt
 st.sidebar.title("Navegación")
 menu = st.sidebar.radio(
     "Ir a:",
-    ["🏠 Inicio", "📊 Análisis de Datos", "🔮 Predicción (Regresión)", "🟢 Clasificación (Cash Ball)"]
+    [" Inicio", " Análisis de Datos", " Predicción (Regresión)", " Clasificación (Cash Ball)"]
 )
 st.sidebar.markdown("---")
-st.sidebar.info("**Curso:** Aprendizaje Estadístico\n**Semestre:** 2025-II")
+st.sidebar.info("**Curso:** Aprendizaje Estadístico\n**\nSemestre:** 2025-II")
 
 # --- 4. LÓGICA PRINCIPAL ---
 if df is not None:
@@ -81,12 +81,12 @@ if df is not None:
     except: pass
 
     # === PESTAÑA INICIO ===
-    if menu == "🏠 Inicio":
+    if menu == " Inicio":
         col_text, col_anim = st.columns([2, 1])
         
         with col_text:
             st.title("Sistema de Aprendizaje Estadístico: Cash4Life")
-            st.markdown("### 🏛️ Universidad Privada Antenor Orrego")
+            st.markdown("### Universidad Privada Antenor Orrego")
             st.markdown("---")
             
             # TEXTO CORREGIDO (Sin color fijo)
@@ -103,13 +103,13 @@ if df is not None:
             
             st.write("") # Espacio
             c1, c2 = st.columns(2)
-            c1.info("📈 **Regresión Lineal:**\nAnalizar si el paso del tiempo influye en los números ganadores.")
-            c2.success("🤖 **Clasificación (IA):**\nPredecir la 'Cash Ball' usando Árboles de Decisión.")
+            c1.info(" **Regresión Lineal:**\nAnalizar si el paso del tiempo influye en los números ganadores.")
+            c2.success(" **Clasificación (IA):**\nPredecir la 'Cash Ball' usando Árboles de Decisión.")
             
             # Próximo Sorteo
             hoy = dt.date.today()
             manana = hoy + dt.timedelta(days=1)
-            st.warning(f"📅 **Próximo Sorteo Oficial:** Mañana, {manana.strftime('%d de %B de %Y')}")
+            st.warning(f" **Próximo Sorteo Oficial:** Mañana, {manana.strftime('%d de %B de %Y')}")
 
         with col_anim:
             if lottie_robot: st_lottie(lottie_robot, height=400, key="bot_intro")
@@ -127,9 +127,9 @@ if df is not None:
                 """)
 
     # === PESTAÑA ANÁLISIS ===
-    elif menu == "📊 Análisis de Datos":
-        st.title("📊 Exploración de Datos Históricos")
-        st.markdown("Visualización de la integridad y distribución de los datos recolectados (2014-Presente).")
+    elif menu == "Análisis de Datos":
+        st.title("Exploración de Datos Históricos")
+        st.markdown("Visualización de la integridad y distribución de los datos recolectados (2014 - Presente).")
         
         col1, col2 = st.columns([3,1])
         with col1:
@@ -205,4 +205,5 @@ if df is not None:
 
 else:
     st.error("⚠️ Error Crítico: No se encontró el dataset en el repositorio.")
+
 
