@@ -12,18 +12,29 @@ from sklearn.metrics import r2_score
 # --- 1. CONFIGURACIÓN DE PÁGINA Y ESTILOS ---
 st.set_page_config(page_title="Predicción Cash4Life", layout="wide", page_icon="💰")
 
-# CSS Personalizado
+# CSS CORREGIDO (ADAPTATIVO)
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    
+    /* Métricas en Verde Dinero */
     div[data-testid="stMetricValue"] { font-size: 24px; color: #00C853; }
+    
+    /* Botones Estilizados */
     div.stButton > button {
         background-color: #4CAF50; color: white; border-radius: 10px; border: none;
         padding: 10px 24px; font-size: 16px; transition-duration: 0.4s;
     }
     div.stButton > button:hover { background-color: #45a049; border: 2px solid white; }
-    .intro-text { font-size: 18px; color: #E0E0E0; }
+    
+    /* Texto de Introducción Inteligente (Se adapta al tema) */
+    .intro-text { 
+        font-size: 18px; 
+        font-weight: 500; 
+        line-height: 1.6;
+        text-align: justify;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -69,7 +80,7 @@ if df is not None:
             df[f'Num{i+1}'] = pd.to_numeric(nums[i])
     except: pass
 
-    # === PESTAÑA INICIO (ACTUALIZADA) ===
+    # === PESTAÑA INICIO ===
     if menu == "🏠 Inicio":
         col_text, col_anim = st.columns([2, 1])
         
@@ -78,7 +89,7 @@ if df is not None:
             st.markdown("### 🏛️ Universidad Privada Antenor Orrego")
             st.markdown("---")
             
-            # --- AQUÍ ESTÁ EL RESUMEN QUE PEDISTE ---
+            # TEXTO CORREGIDO (Sin color fijo)
             st.markdown("""
             <div class="intro-text">
             Este proyecto desarrolla un análisis profundo sobre los sorteos de la lotería 
@@ -90,6 +101,7 @@ if df is not None:
             </div>
             """, unsafe_allow_html=True)
             
+            st.write("") # Espacio
             c1, c2 = st.columns(2)
             c1.info("📈 **Regresión Lineal:**\nAnalizar si el paso del tiempo influye en los números ganadores.")
             c2.success("🤖 **Clasificación (IA):**\nPredecir la 'Cash Ball' usando Árboles de Decisión.")
@@ -151,7 +163,7 @@ if df is not None:
                 n1 = int(round(pred_val))
                 n1 = max(1, min(60, n1))
                 
-                # Simulación visual del resto del ticket
+                # Simulación visual
                 resto = np.random.choice(list(set(range(1, 61)) - {n1}), 4, replace=False)
                 resto.sort()
                 
