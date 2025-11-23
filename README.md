@@ -24,15 +24,15 @@ El sistema permite visualizar datos, realizar predicciones de regresión lineal 
 El aplicativo web cuenta con tres módulos principales:
 
 ### 1. Análisis Exploratorio de Datos
-[cite_start]Visualización de la data cruda y estadísticas descriptivas de los sorteos históricos para validar la integridad de la información[cite: 66].
+Visualización de la data cruda y estadísticas descriptivas de los sorteos históricos para validar la integridad de la información.
 
 ### 2. Predicción de Tendencia (Regresión)
 Utiliza un modelo de **Regresión Lineal Simple** para analizar la relación entre el paso del tiempo y el valor del primer número ganador (*Num1*). 
-* [cite_start]**Objetivo:** Determinar si existe una tendencia predecible ascendente o descendente en los sorteos[cite: 160].
+* **Objetivo:** Determinar si existe una tendencia predecible ascendente o descendente en los sorteos.
 * **Métrica:** Coeficiente de determinación ($R^2$).
 
 ### 3. Clasificación (Cash Ball)
-[cite_start]Implementa un algoritmo de **Árbol de Decisión** para predecir el número especial (*Cash Ball*) basándose en los 5 números principales sorteados.
+Implementa un algoritmo de **Árbol de Decisión** para predecir el número especial (*Cash Ball*) basándose en los 5 números principales sorteados.
 
 ## 🛠️ Tecnologías Usadas
 * **Lenguaje:** Python
