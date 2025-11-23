@@ -1,15 +1,48 @@
-# Proyecto-Cash4Life-2025
-# ANÁLISIS DE LA FRECUENCIA DE NÚMEROS GANADORES - CASH4LIFE
+# 💰 Análisis Estadístico y Predicción: Lotería Cash4Life
 
-## Autores
-* Bernabé Arce, James Franco 
-* Coronado Medina, Sergio Adrian 
+![Python](https://img.shields.io/badge/Python-3.9-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-red)
+![Machine Learning](https://img.shields.io/badge/Model-Scikit_Learn-orange)
+
+## 📌 Descripción del Proyecto
+Este proyecto desarrolla un análisis estadístico profundo sobre los resultados históricos de la lotería **Cash4Life (New York)** desde el año 2014. A pesar de que los sorteos se diseñan bajo principios de aleatoriedad, esta investigación busca identificar patrones, sesgos o tendencias utilizando técnicas de **Machine Learning**.
+
+El sistema permite visualizar datos, realizar predicciones de regresión lineal y clasificar resultados probables mediante árboles de decisión.
+
+## 👥 Autores
+**Universidad Privada Antenor Orrego - Ingeniería de Sistemas e IA**
+* Bernabé Arce, James Franco
+* Coronado Medina, Sergio Adrian
 * Enriquez Cabanillas, César
 * Carrascal Carranza, Hetzer
-* Lázaro Velásquez, Jesús Alberto 
-* Martino López, Marielsys Paola 
-* Mori Galarza, Franco 
-* Vergaray Colonia, José Francisco 
+* Lázaro Velásquez, Jesús Alberto
+* Martino López, Marielsys Paola
+* Mori Galarza, Franco
+* Vergaray Colonia, José Francisco
 
-## Descripción
-Este proyecto analiza si existe aleatoriedad real en la lotería Cash4Life usando modelos de Regresión Lineal y Árboles de Decisión.
+## 🚀 Funcionalidades del Sistema
+El aplicativo web cuenta con tres módulos principales:
+
+### 1. Análisis Exploratorio de Datos
+[cite_start]Visualización de la data cruda y estadísticas descriptivas de los sorteos históricos para validar la integridad de la información[cite: 66].
+
+### 2. Predicción de Tendencia (Regresión)
+Utiliza un modelo de **Regresión Lineal Simple** para analizar la relación entre el paso del tiempo y el valor del primer número ganador (*Num1*). 
+* [cite_start]**Objetivo:** Determinar si existe una tendencia predecible ascendente o descendente en los sorteos[cite: 160].
+* **Métrica:** Coeficiente de determinación ($R^2$).
+
+### 3. Clasificación (Cash Ball)
+[cite_start]Implementa un algoritmo de **Árbol de Decisión** para predecir el número especial (*Cash Ball*) basándose en los 5 números principales sorteados.
+
+## 🛠️ Tecnologías Usadas
+* **Lenguaje:** Python
+* **Interfaz Web:** Streamlit
+* **Ciencia de Datos:** Pandas, Scikit-Learn, Numpy
+* **Visualización:** Matplotlib (en notebooks), Lottie Files (animaciones)
+
+## 📄 Instalación Local
+Si deseas correr este proyecto en tu computadora:
+
+1. Clona el repositorio:
+   ```bash
+   git clone [https://github.com/verguis21/Proyecto-Cash4Life-2025] (https://github.com/verguis21/Proyecto-Cash4Life-2025)
