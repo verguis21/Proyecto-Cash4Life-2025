@@ -69,7 +69,7 @@ menu = st.sidebar.radio(
     [" Inicio", " Análisis de Datos", " Predicción (Regresión)", " Clasificación (Cash Ball)"]
 )
 st.sidebar.markdown("---")
-st.sidebar.info("**Curso:** Aprendizaje Estadístico\n**\nSemestre:** 2025-II")
+st.sidebar.info("**Curso:** Aprendizaje Estadístico\n **Semestre:**\n 2025-II")
 
 # --- 4. LÓGICA PRINCIPAL ---
 if df is not None:
@@ -205,5 +205,6 @@ if df is not None:
 
 else:
     st.error("⚠️ Error Crítico: No se encontró el dataset en el repositorio.")
+
 
 
