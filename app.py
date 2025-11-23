@@ -140,8 +140,8 @@ if df is not None:
             if lottie_analysis: st_lottie(lottie_analysis, height=120, key="ana")
 
     # === PESTAÑA PREDICCIÓN (REGRESIÓN) ===
-    elif menu == "🔮 Predicción (Regresión)":
-        st.title("🔮 Modelo de Tendencia Temporal")
+    elif menu == " Predicción (Regresión)":
+        st.title(" Modelo de Tendencia Temporal")
         st.markdown("Algoritmo: **Regresión Lineal Simple** | Variable Objetivo: **Primer Número (Num1)**")
         
         X = df[['DrawDate_Ordinal']]
@@ -155,7 +155,7 @@ if df is not None:
             tomorrow = dt.date.today() + dt.timedelta(days=1)
             fecha_input = st.date_input("Seleccione fecha a analizar:", tomorrow)
             
-            if st.button("🎰 Generar Predicción del Ticket"):
+            if st.button(" Generar Predicción del Ticket"):
                 with st.spinner("Procesando modelo matemático..."):
                     time.sleep(1)
                     
@@ -181,8 +181,8 @@ if df is not None:
             if lottie_lottery: st_lottie(lottie_lottery, height=200, key="loto")
 
     # === PESTAÑA CLASIFICACIÓN ===
-    elif menu == "🟢 Clasificación (Cash Ball)":
-        st.title("🟢 Predicción de Cash Ball")
+    elif menu == " Clasificación (Cash Ball)":
+        st.title(" Predicción de Cash Ball")
         st.markdown("Algoritmo: **Árbol de Decisión** | Objetivo: Clasificar la **Bola Extra** (1-4)")
         
         X = df[['Num1', 'Num2', 'Num3', 'Num4', 'Num5']]
@@ -198,13 +198,14 @@ if df is not None:
         n4 = c4.number_input("B4", 1, 60, 30)
         n5 = c5.number_input("B5", 1, 60, 45)
         
-        if st.button("🎱 Predecir Cash Ball"):
+        if st.button(" Predecir Cash Ball"):
             pred = clf.predict([[n1,n2,n3,n4,n5]])[0]
             st.balloons()
             st.success(f"Según el patrón histórico, la Cash Ball debería ser: **{pred}**")
 
 else:
     st.error("⚠️ Error Crítico: No se encontró el dataset en el repositorio.")
+
 
 
 
