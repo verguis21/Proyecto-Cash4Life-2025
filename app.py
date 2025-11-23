@@ -1,13 +1,29 @@
 import streamlit as st
 import pandas as pd
 import datetime as dt
+import requests
+import time
+import numpy as np
+from streamlit_lottie import st_lottie
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score, accuracy_score
+from sklearn.metrics import r2_score
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Predicción Cash4Life", layout="wide", page_icon="💰")
+
+# --- FUNCIÓN PARA CARGAR ANIMACIONES LOTTIE ---
+def load_lottieurl(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
+
+# Cargar animaciones (URLs públicas de LottieFiles)
+lottie_analysis = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_qp1q7mct.json")
+lottie_lottery = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_q5pk6p1k.json")
+lottie_robot = load_lottieurl("https://lottie.host/61730045-8c08-4171-8720-c81b37d4566c/2j1y7v3XlQ.json")
 
 # --- CARGA DE DATOS ---
 @st.cache_data
@@ -22,16 +38,17 @@ def load_data():
 
 df = load_data()
 
-# --- BARRA LATERAL (SIDEBAR) ---
-st.sidebar.image("https://cdn-icons-png.flaticon.com/512/1086/1086581.png", width=100)
-st.sidebar.title("Menú Principal")
+# --- BARRA LATERAL ---
+st.sidebar.title("🎛️ Panel de Control")
 menu = st.sidebar.radio(
-    "Seleccione una opción:",
-    ["Inicio", "Análisis de Datos", "Predicción (Regresión)", "Clasificación (Cash Ball)"]
+    "Navegación:",
+    ["🏠 Inicio", "📊 Análisis de Datos", "🔮 Predicción (Regresión)", "🟢 Clasificación (Cash Ball)"]
 )
+st.sidebar.markdown("---")
+st.sidebar.info("v2.0 - Edición Proyecto Final")
 
 if df is not None:
-    # Preprocesamiento oculto
+    # Preprocesamiento
     df['DrawDate_Ordinal'] = df['Draw Date'].map(dt.datetime.toordinal)
     try:
         nums = df["Winning Numbers"].str.split(" ", expand=True)
@@ -40,30 +57,22 @@ if df is not None:
     except:
         pass
 
-    # --- PESTAÑA 1: INICIO (Presentación) ---
-    if menu == "Inicio":
-        st.title("💰 Sistema de Predicción Cash4Life - New York")
-        st.markdown("---")
-        st.subheader("📌 Información del Proyecto")
-        st.markdown("""
-        Bienvenido al sistema de **Aprendizaje Estadístico** aplicado a la lotería Cash4Life.
-        Este aplicativo permite visualizar datos históricos y probar modelos de predicción basados en Machine Learning.
-        
-        **Curso:** Aprendizaje Estadístico  
-        **Universidad Privada Antenor Orrego**
-        """)
-        
-        st.info("""
-        **👨‍💻 Equipo de Desarrollo (Autores):**
-        * Bernabé Arce, James Franco
-        * Coronado Medina, Sergio Adrian
-        * Enriquez Cabanillas, César
-        * Carrascal Carranza, Hetzer
-        * Lázaro Velásquez, Jesús Alberto
-        * Martino López, Marielsys Paola
-        * Mori Galarza, Franco
-        * Vergaray Colonia, José Francisco
-        """)
+    # --- 1. INICIO ---
+    if menu == "🏠 Inicio":
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            if lottie_robot:
+                st_lottie(lottie_robot, height=300, key="robot")
+        with col2:
+            st.title("Sistema Inteligente Cash4Life")
+            st.markdown("### Universidad Privada Antenor Orrego")
+            st.success("Bienvenido al sistema de análisis predictivo basado en Machine Learning.")
+            st.markdown("""
+            Este software permite:
+            * 🕵️‍♀️ **Explorar** patrones históricos ocultos.
+            * 📈 **Predecir** tendencias usando Regresión Lineal.
+            * 🧠 **Clasificar** resultados probables con IA.
+            """)
 
     # --- PESTAÑA 2: ANÁLISIS ---
     elif menu == "Análisis de Datos":
@@ -142,3 +151,4 @@ if df is not None:
 
 else:
     st.error("⚠️ Error: No se encontró el archivo CSV en el repositorio.")
+
