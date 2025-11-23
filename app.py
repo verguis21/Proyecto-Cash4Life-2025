@@ -42,9 +42,9 @@ if df is not None:
 
     # --- PESTAÑA 1: INICIO (Presentación) ---
     if menu == "Inicio":
-        st.title("💰 Sistema de Predicción Cash4Life - New York")
+        st.title(" Sistema de Predicción Cash4Life - New York")
         st.markdown("---")
-        st.subheader("📌 Información del Proyecto")
+        st.subheader(" Información del Proyecto")
         st.markdown("""
         Bienvenido al sistema de **Aprendizaje Estadístico** aplicado a la lotería Cash4Life.
         Este aplicativo permite visualizar datos históricos y probar modelos de predicción basados en Machine Learning.
@@ -67,7 +67,7 @@ if df is not None:
 
     # --- PESTAÑA 2: ANÁLISIS ---
     elif menu == "Análisis de Datos":
-        st.title("📊 Exploración de Datos Históricos")
+        st.title(" Exploración de Datos Históricos")
         st.markdown("""
         En esta sección se observan los registros 'crudos' obtenidos de la Lotería de Nueva York.
         Sirve para verificar la integridad de los datos antes de procesarlos.
@@ -82,7 +82,7 @@ if df is not None:
 
     # --- PESTAÑA 3: REGRESIÓN (Corregido a Enteros) ---
     elif menu == "Predicción (Regresión)":
-        st.title("📈 Modelo de Regresión Lineal")
+        st.title(" Modelo de Regresión Lineal")
         st.markdown("""
         **Objetivo:** Intentar predecir el valor del **Primer Número Ganador (Num1)** basándose únicamente en la fecha del sorteo.
         _Nota: Un resultado lejano a la realidad confirma la aleatoriedad del juego._
@@ -99,7 +99,7 @@ if df is not None:
         st.metric("Precisión del Modelo (R²)", f"{r2:.4f}")
         
         st.markdown("---")
-        st.subheader("🔮 Simular Predicción")
+        st.subheader(" Simular Predicción")
         fecha = st.date_input("Seleccione una fecha futura para el sorteo:")
         
         if st.button("Predecir Primer Número"):
@@ -114,7 +114,7 @@ if df is not None:
 
     # --- PESTAÑA 4: CLASIFICACIÓN ---
     elif menu == "Clasificación (Cash Ball)":
-        st.title("🟢 Clasificación de Cash Ball")
+        st.title(" Clasificación de Cash Ball")
         st.markdown("""
         **Objetivo:** Predecir el número especial **'Cash Ball'** (del 1 al 4) utilizando los 5 números principales ganadores.
         Este módulo utiliza un algoritmo de **Árbol de Decisión**.
@@ -126,7 +126,7 @@ if df is not None:
         model.fit(X, y)
         
         st.markdown("---")
-        st.subheader("🔢 Ingrese los números ganadores:")
+        st.subheader(" Ingrese los números ganadores:")
         
         c1, c2, c3, c4, c5 = st.columns(5)
         n1 = c1.number_input("Bola 1", 1, 60, 5)
@@ -142,4 +142,5 @@ if df is not None:
 
 else:
     st.error("⚠️ Error: No se encontró el archivo CSV en el repositorio.")
+
 
