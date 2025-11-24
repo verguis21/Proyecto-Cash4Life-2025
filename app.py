@@ -18,13 +18,11 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* FONDO DEGRADADO */
     [data-testid="stAppViewContainer"] {
         background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
         background-attachment: fixed;
     }
     
-    /* EFECTO DE ZOOM EN BOTONES */
     div.stButton > button:hover {
         transform: scale(1.03);
         box-shadow: 0 8px 15px rgba(0,0,0,0.2);
@@ -42,7 +40,6 @@ st.markdown("""
     h1 { color: #2e7d32; font-family: 'Helvetica', sans-serif; }
     h3 { color: #388e3c; }
     
-    /* BOTONES */
     div.stButton > button {
         background: linear-gradient(to right, #43a047, #66bb6a);
         color: white; border-radius: 10px; border: none;
@@ -92,7 +89,6 @@ st.sidebar.info("**Semestre:** 2025-II\n**Estado:** Sistema Activo 🟢")
 if df is not None:
     # Preprocesamiento general
     df['DrawDate_Ordinal'] = df['Draw Date'].map(dt.datetime.toordinal)
-    # Extraer números individuales para análisis
     try:
         nums_split = df["Winning Numbers"].str.split(" ", expand=True)
         cols_nums = []
@@ -141,7 +137,7 @@ if df is not None:
                 * Vergaray Colonia, José Francisco
                 """)
 
-    # === ANÁLISIS HISTÓRICO (MEJORADO CON TABLAS) ===
+    # === ANÁLISIS HISTÓRICO (CORREGIDO) ===
     elif menu == "📊 Análisis Histórico":
         st.header("📊 Exploración de Datos")
         st.markdown("""
@@ -152,21 +148,28 @@ if df is not None:
         """, unsafe_allow_html=True)
         st.write("")
 
-        # TAB 1: DATOS CRUDOS
         tab1, tab2 = st.tabs(["📄 Base de Datos Completa", "📈 Análisis de Frecuencia"])
         
         with tab1:
             c1, c2 = st.columns([3, 1])
             with c1:
-                st.dataframe(df, use_container_width=True, height=400)
+                # --- CORRECCIÓN DE FECHA Y COLUMNAS ---
+                # 1. Crear copia para visualización
+                df_vis = df.copy()
+                # 2. Convertir fecha a texto limpio (YYYY-MM-DD) para eliminar la hora
+                df_vis['Draw Date'] = df_vis['Draw Date'].dt.strftime('%Y-%m-%d')
+                
+                # 3. Filtrar columnas (Ocultar DrawDate_Ordinal)
+                cols_to_show = ['Draw Date', 'Winning Numbers', 'Cash Ball', 'Num1', 'Num2', 'Num3', 'Num4', 'Num5']
+                
+                # Mostrar solo las columnas limpias
+                st.dataframe(df_vis[cols_to_show], use_container_width=True, height=400)
             with c2:
                 st.metric("Total Registros", f"{len(df):,}")
                 st.info("ℹ️ Dataset estático actualizado al periodo 2025-II.")
 
-        # TAB 2: ESTADÍSTICAS (LO QUE PEDISTE)
         with tab2:
             st.subheader("🏆 Números Más Frecuentes")
-            # Unir todos los números en una sola lista para contar frecuencia
             all_numbers = pd.concat([df[f'Num{i}'] for i in range(1, 6)])
             freq_counts = all_numbers.value_counts().head(10)
             
@@ -181,11 +184,10 @@ if df is not None:
     elif menu == "🔮 Predicción (Regresión)":
         st.header("🔮 Predicción de Tendencia")
         
-        # EXPLICACIÓN TÉCNICA
         with st.expander("📘 ¿Cómo funciona este modelo? (Explicación Técnica)"):
             st.markdown("""
             Utilizamos un modelo de **Regresión Lineal Simple**.
-            1. Convertimos la fecha del sorteo a un número ordinal (e.g., 738000).
+            1. Convertimos la fecha del sorteo a un número ordinal.
             2. Entrenamos el modelo (`model.fit`) para encontrar una línea recta que minimice la distancia entre la fecha y el primer número ganador.
             3. El resultado nos muestra la tendencia central del sorteo.
             """)
@@ -213,12 +215,10 @@ if df is not None:
             with st.spinner("La IA está calculando probabilidades..."):
                 time.sleep(2)
             
-            # Predicción Num1
             pred_val = model.predict([[dt.datetime.toordinal(fecha_input)]])[0]
             n1 = int(round(pred_val))
             n1 = max(1, min(60, n1))
             
-            # Simulación Resto
             resto = np.random.choice(list(set(range(1, 61)) - {n1}), 4, replace=False)
             resto.sort()
             
@@ -238,7 +238,6 @@ if df is not None:
     elif menu == "🟢 Clasificación (Cash Ball)":
         st.header("🟢 IA: Clasificación Cash Ball")
         
-        # EXPLICACIÓN TÉCNICA
         with st.expander("📘 ¿Cómo funciona este modelo? (Explicación Técnica)"):
             st.markdown("""
             Utilizamos un algoritmo de **Árbol de Decisión (Decision Tree Classifier)**.
@@ -267,3 +266,4 @@ if df is not None:
 
 else:
     st.error("⚠️ Error: No se encontró el dataset en GitHub.")
+
