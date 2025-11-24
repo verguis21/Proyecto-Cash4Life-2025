@@ -9,36 +9,58 @@ from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import r2_score
 
-# --- 1. CONFIGURACIÓN DE PÁGINA Y ESTILOS ---
+# --- 1. CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Predicción Cash4Life", layout="wide", page_icon="💰")
 
-# CSS CORREGIDO (ADAPTATIVO)
-st.markdown("""
+# --- 2. ESTILOS CSS AVANZADOS (FONDO + BOTONES) ---
+# URL de la imagen de fondo (Dinero cayendo / abstracto)
+background_url = "https://img.freepik.com/free-vector/green-money-background-with-falling-banknotes_1017-30248.jpg"
+
+st.markdown(f"""
 <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
     
-    /* Métricas en Verde Dinero */
-    div[data-testid="stMetricValue"] { font-size: 24px; color: #00C853; }
+    /* FONDO DE PANTALLA PRINCIPAL */
+    [data-testid="stAppViewContainer"] {{
+        background-image: url("{background_url}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
     
-    /* Botones Estilizados */
-    div.stButton > button {
-        background-color: #4CAF50; color: white; border-radius: 10px; border: none;
-        padding: 10px 24px; font-size: 16px; transition-duration: 0.4s;
-    }
-    div.stButton > button:hover { background-color: #45a049; border: 2px solid white; }
+    /* CAPA SEMITRANSPARENTE PARA QUE SE LEA EL TEXTO */
+    [data-testid="stHeader"] {{
+        background-color: rgba(0,0,0,0);
+    }}
     
-    /* Texto de Introducción Inteligente (Se adapta al tema) */
-    .intro-text { 
-        font-size: 18px; 
-        font-weight: 500; 
-        line-height: 1.6;
-        text-align: justify;
-    }
+    /* CONTENEDOR PRINCIPAL CON FONDO BLANCO SUAVE */
+    .block-container {{
+        background-color: rgba(255, 255, 255, 0.92); /* Blanco al 92% de opacidad */
+        border-radius: 20px;
+        padding: 3rem;
+        margin-top: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }}
+
+    /* Estilo de Métricas */
+    div[data-testid="stMetricValue"] {{ font-size: 26px; color: #008000; font-weight: bold; }}
+    
+    /* Botones */
+    div.stButton > button {{
+        background-color: #006400; color: white; border-radius: 12px; border: none;
+        padding: 12px 28px; font-size: 16px; font-weight: 600; transition: 0.3s;
+        width: 100%;
+    }}
+    div.stButton > button:hover {{ background-color: #008000; transform: scale(1.02); }}
+    
+    /* Texto Intro */
+    .intro-text {{ font-size: 18px; color: #333; text-align: justify; line-height: 1.6; }}
 </style>
 """, unsafe_allow_html=True)
 
-# --- 2. CARGA DE RECURSOS ---
+# --- 3. CARGA DE ANIMACIONES (LOTTIE) ---
 def load_lottieurl(url):
     try:
         r = requests.get(url)
@@ -46,10 +68,12 @@ def load_lottieurl(url):
         return r.json()
     except: return None
 
-lottie_analysis = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_qp1q7mct.json")
-lottie_lottery = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_q5pk6p1k.json")
-lottie_robot = load_lottieurl("https://lottie.host/61730045-8c08-4171-8720-c81b37d4566c/2j1y7v3XlQ.json")
+# Nuevas animaciones
+lottie_robot_intro = load_lottieurl("https://lottie.host/61730045-8c08-4171-8720-c81b37d4566c/2j1y7v3XlQ.json")
+lottie_calculating = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json") # Robot procesando
+lottie_money = load_lottieurl("https://assets2.lottiefiles.com/packages/lf20_q5pk6p1k.json") # Dinero
 
+# --- 4. CARGA DE DATOS ---
 @st.cache_data
 def load_data():
     file_path = "Lottery_Cash_4_Life_Winning_Numbers__Beginning_2014.csv"
@@ -61,17 +85,17 @@ def load_data():
 
 df = load_data()
 
-# --- 3. MENÚ LATERAL ---
-st.sidebar.image("https://cdn-icons-png.flaticon.com/512/1086/1086581.png", width=80)
-st.sidebar.title("Navegación")
+# --- 5. MENÚ LATERAL ---
+st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2454/2454269.png", width=100)
+st.sidebar.title("Menú Cash4Life")
 menu = st.sidebar.radio(
-    "Ir a:",
-    [" Inicio", " Análisis de Datos", " Predicción (Regresión)", " Clasificación (Cash Ball)"]
+    "Seleccione Opción:",
+    ["🏠 Inicio", "📊 Análisis Histórico", "🔮 Predicción (Regresión)", "🟢 Clasificación (Cash Ball)"]
 )
 st.sidebar.markdown("---")
-st.sidebar.info("**Curso:** Aprendizaje Estadístico\n \n**Semestre:** 2025-II")
+st.sidebar.info("**Universidad Privada Antenor Orrego**\nIngeniería de Sistemas e IA")
 
-# --- 4. LÓGICA PRINCIPAL ---
+# --- 6. LÓGICA PRINCIPAL ---
 if df is not None:
     df['DrawDate_Ordinal'] = df['Draw Date'].map(dt.datetime.toordinal)
     try:
@@ -81,45 +105,38 @@ if df is not None:
     except: pass
 
     # === PESTAÑA INICIO ===
-    if menu == " Inicio":
+    if menu == "🏠 Inicio":
         col_text, col_anim = st.columns([2, 1])
-        
         with col_text:
-            st.title("Sistema de Aprendizaje Estadístico: Cash4Life")
-            st.markdown("### Universidad Privada Antenor Orrego")
+            st.title("💸 Sistema Predictivo Cash4Life")
+            st.markdown("### Proyecto de Aprendizaje Estadístico")
             st.markdown("---")
-            
-            # TEXTO CORREGIDO (Sin color fijo)
             st.markdown("""
             <div class="intro-text">
-            Este proyecto desarrolla un análisis profundo sobre los sorteos de la lotería 
-            <b>Cash4Life (New York)</b>. A pesar de ser un juego de azar diseñado bajo principios 
-            de aleatoriedad, esta investigación busca identificar posibles <b>patrones estadísticos, 
-            sesgos o tendencias ocultas</b> en los datos históricos.
-            <br><br>
-            Utilizando algoritmos de <b>Machine Learning</b>, el sistema permite:
+            Bienvenido. Este sistema utiliza algoritmos avanzados de <b>Machine Learning</b> para desafiar 
+            la aleatoriedad de la lotería Cash4Life de Nueva York. Analizamos miles de sorteos históricos 
+            (2014-Presente) buscando patrones ocultos.
             </div>
             """, unsafe_allow_html=True)
             
-            st.write("") # Espacio
+            st.write("")
             c1, c2 = st.columns(2)
-            c1.info(" **Regresión Lineal:**\nAnalizar si el paso del tiempo influye en los números ganadores.")
-            c2.success(" **Clasificación (IA):**\nPredecir la 'Cash Ball' usando Árboles de Decisión.")
+            c1.success("📈 **Regresión:** Predicción de tendencias.")
+            c2.info("🤖 **Clasificación:** IA para la Cash Ball.")
             
-            # Próximo Sorteo
             hoy = dt.date.today()
-            manana = hoy + dt.timedelta(days=1)
-            st.warning(f" **Próximo Sorteo Oficial:** Mañana, {manana.strftime('%d de %B de %Y')}")
+            prox = hoy + dt.timedelta(days=1)
+            st.warning(f"📅 **Próximo Sorteo:** Mañana, {prox.strftime('%d-%m-%Y')}")
 
         with col_anim:
-            if lottie_robot: st_lottie(lottie_robot, height=400, key="bot_intro")
+            if lottie_robot_intro: st_lottie(lottie_robot_intro, height=350)
             
-            with st.expander("👥 Ver Equipo de Investigación"):
+            with st.expander("👨‍💻 Ver Autores"):
                 st.write("""
                 * Bernabé Arce, James Franco
-                * Carrascal Carranza, Hetzer
                 * Coronado Medina, Sergio Adrian
                 * Enriquez Cabanillas, César
+                * Carrascal Carranza, Hetzer
                 * Lázaro Velásquez, Jesús Alberto
                 * Martino López, Marielsys Paola
                 * Mori Galarza, Franco
@@ -127,22 +144,18 @@ if df is not None:
                 """)
 
     # === PESTAÑA ANÁLISIS ===
-    elif menu == "Análisis de Datos":
-        st.title("Exploración de Datos Históricos")
-        st.markdown("Visualización de la integridad y distribución de los datos recolectados (2014 - Presente).")
-        
-        col1, col2 = st.columns([3,1])
-        with col1:
+    elif menu == "📊 Análisis Histórico":
+        st.header("📊 Exploración de la Data")
+        c1, c2 = st.columns([3, 1])
+        with c1:
             st.dataframe(df.head(15), use_container_width=True)
-        with col2:
-            st.metric("Total de Sorteos", f"{len(df):,}")
-            st.metric("Variables Analizadas", "7 (Fecha + 6 Bolas)")
-            if lottie_analysis: st_lottie(lottie_analysis, height=120, key="ana")
+        with c2:
+            st.metric("Total Sorteos", f"{len(df):,}")
+            st.metric("Años Analizados", f"{2014} - {dt.date.today().year}")
 
-    # === PESTAÑA PREDICCIÓN (REGRESIÓN) ===
-    elif menu == " Predicción (Regresión)":
-        st.title(" Modelo de Tendencia Temporal")
-        st.markdown("Algoritmo: **Regresión Lineal Simple** | Variable Objetivo: **Primer Número (Num1)**")
+    # === PESTAÑA PREDICCIÓN (CON ROBOT NUEVO) ===
+    elif menu == "🔮 Predicción (Regresión)":
+        st.header("🔮 Predicción de Tendencia (Regresión)")
         
         X = df[['DrawDate_Ordinal']]
         y = df['Num1']
@@ -150,63 +163,72 @@ if df is not None:
         model.fit(X, y)
         r2 = r2_score(y, model.predict(X))
         
-        col1, col2 = st.columns([2,1])
-        with col1:
+        c_input, c_anim = st.columns([1, 1])
+        
+        with c_input:
+            st.markdown("### Configurar Predicción")
             tomorrow = dt.date.today() + dt.timedelta(days=1)
-            fecha_input = st.date_input("Seleccione fecha a analizar:", tomorrow)
+            fecha_input = st.date_input("Fecha del Sorteo:", tomorrow)
             
-            if st.button(" Generar Predicción del Ticket"):
-                with st.spinner("Procesando modelo matemático..."):
-                    time.sleep(1)
-                    
-                pred_val = model.predict([[dt.datetime.toordinal(fecha_input)]])[0]
-                n1 = int(round(pred_val))
-                n1 = max(1, min(60, n1))
-                
-                # Simulación visual
-                resto = np.random.choice(list(set(range(1, 61)) - {n1}), 4, replace=False)
-                resto.sort()
-                
-                st.markdown("### 🎫 Ticket Probable (IA + Simulación)")
-                b1, b2, b3, b4, b5 = st.columns(5)
-                b1.metric("Bola 1 (Predicha)", n1)
-                b2.metric("Bola 2", resto[0])
-                b3.metric("Bola 3", resto[1])
-                b4.metric("Bola 4", resto[2])
-                b5.metric("Bola 5", resto[3])
-                
-                st.caption(f"Nota: El R² del modelo es {r2:.5f}, lo que confirma la alta aleatoriedad del sorteo.")
-
-        with col2:
-            if lottie_lottery: st_lottie(lottie_lottery, height=200, key="loto")
+            predict_btn = st.button("🚀 Iniciar Cálculo Predictivo")
+            
+        with c_anim:
+            # Espacio reservado para la animación
+            anim_placeholder = st.empty()
+            
+        if predict_btn:
+            # MOSTRAR ROBOT CALCULANDO
+            with c_anim:
+                if lottie_calculating: 
+                    st_lottie(lottie_calculating, height=200, key="calc")
+            
+            with st.spinner("El modelo está procesando algoritmos matemáticos..."):
+                time.sleep(3) # Tiempo para ver la animación
+            
+            # Cálculo real
+            pred_val = model.predict([[dt.datetime.toordinal(fecha_input)]])[0]
+            n1 = int(round(pred_val))
+            n1 = max(1, min(60, n1))
+            
+            resto = np.random.choice(list(set(range(1, 61)) - {n1}), 4, replace=False)
+            resto.sort()
+            
+            st.markdown("---")
+            st.subheader(f"🎫 Ticket Generado por la IA")
+            b1, b2, b3, b4, b5 = st.columns(5)
+            b1.metric("Bola 1 (IA)", n1)
+            b2.metric("Bola 2", resto[0])
+            b3.metric("Bola 3", resto[1])
+            b4.metric("Bola 4", resto[2])
+            b5.metric("Bola 5", resto[3])
+            
+            st.caption(f"Confianza del Modelo (R²): {r2:.5f}")
+            st.success("¡Cálculo finalizado exitosamente!")
 
     # === PESTAÑA CLASIFICACIÓN ===
-    elif menu == " Clasificación (Cash Ball)":
-        st.title(" Predicción de Cash Ball")
-        st.markdown("Algoritmo: **Árbol de Decisión** | Objetivo: Clasificar la **Bola Extra** (1-4)")
+    elif menu == "🟢 Clasificación (Cash Ball)":
+        st.header("🟢 IA: Clasificación Cash Ball")
+        st.markdown("Ingrese los 5 números ganadores para predecir la bola extra.")
         
         X = df[['Num1', 'Num2', 'Num3', 'Num4', 'Num5']]
         y = df['Cash Ball']
         clf = DecisionTreeClassifier(max_depth=5)
         clf.fit(X, y)
         
-        st.write("Ingrese una combinación de 5 números principales:")
         c1, c2, c3, c4, c5 = st.columns(5)
-        n1 = c1.number_input("B1", 1, 60, 5)
-        n2 = c2.number_input("B2", 1, 60, 10)
-        n3 = c3.number_input("B3", 1, 60, 25)
-        n4 = c4.number_input("B4", 1, 60, 30)
-        n5 = c5.number_input("B5", 1, 60, 45)
+        n1 = c1.number_input("Bola 1", 1, 60, 5)
+        n2 = c2.number_input("Bola 2", 1, 60, 10)
+        n3 = c3.number_input("Bola 3", 1, 60, 25)
+        n4 = c4.number_input("Bola 4", 1, 60, 30)
+        n5 = c5.number_input("Bola 5", 1, 60, 45)
         
-        if st.button(" Predecir Cash Ball"):
+        if st.button("🎱 Predecir Cash Ball"):
             pred = clf.predict([[n1,n2,n3,n4,n5]])[0]
             st.balloons()
-            st.success(f"Según el patrón histórico, la Cash Ball debería ser: **{pred}**")
+            st.metric("Cash Ball Probable", pred)
 
 else:
-    st.error("⚠️ Error Crítico: No se encontró el dataset en el repositorio.")
-
-
+    st.error("⚠️ Error: No se encontró el dataset en GitHub.")
 
 
 
