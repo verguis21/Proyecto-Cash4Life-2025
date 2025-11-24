@@ -18,60 +18,40 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* FONDO DE PANTALLA: DEGRADADO SUAVE (NO MOLESTA A LA VISTA) */
+    /* FONDO DE PANTALLA: DEGRADADO SUAVE */
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); /* Tonos verdes muy suaves */
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
         background-attachment: fixed;
     }
     
     /* CAPA SEMITRANSPARENTE */
-    [data-testid="stHeader"] {
-        background-color: rgba(0,0,0,0);
-    }
+    [data-testid="stHeader"] { background-color: rgba(0,0,0,0); }
     
-    /* CONTENEDOR PRINCIPAL (TARJETA FLOTANTE) */
+    /* CONTENEDOR PRINCIPAL */
     .block-container {
         background-color: #ffffff;
         border-radius: 25px;
         padding: 3rem;
         margin-top: 2rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Sombra elegante */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         border: 1px solid #e0e0e0;
     }
 
-    /* TÍTULOS */
+    /* ESTILOS GENERALES */
     h1 { color: #2e7d32; font-family: 'Helvetica', sans-serif; }
     h2, h3 { color: #388e3c; }
-
-    /* ESTILO DE MÉTRICAS */
     div[data-testid="stMetricValue"] { font-size: 26px; color: #1b5e20; font-weight: bold; }
     
-    /* BOTONES MODERNOS */
+    /* BOTONES */
     div.stButton > button {
         background: linear-gradient(to right, #43a047, #66bb6a);
-        color: white; 
-        border-radius: 12px; 
-        border: none;
-        padding: 12px 28px; 
-        font-size: 16px; 
-        font-weight: 600; 
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        transition: 0.3s;
-        width: 100%;
+        color: white; border-radius: 12px; border: none;
+        padding: 12px 28px; font-size: 16px; font-weight: 600; 
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; width: 100%;
     }
-    div.stButton > button:hover { 
-        transform: translateY(-2px); 
-        box-shadow: 0 6px 8px rgba(0,0,0,0.2);
-    }
+    div.stButton > button:hover { transform: translateY(-2px); box-shadow: 0 6px 8px rgba(0,0,0,0.2); }
     
-    /* TEXTO INTRODUCTORIO */
-    .intro-text { 
-        font-size: 18px; 
-        color: #424242; 
-        text-align: justify; 
-        line-height: 1.6; 
-        font-weight: 400;
-    }
+    .intro-text { font-size: 18px; color: #424242; text-align: justify; line-height: 1.6; font-weight: 400; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -83,7 +63,6 @@ def load_lottieurl(url):
         return r.json()
     except: return None
 
-# Animaciones (El dinamismo que pediste)
 lottie_robot_intro = load_lottieurl("https://lottie.host/61730045-8c08-4171-8720-c81b37d4566c/2j1y7v3XlQ.json")
 lottie_calculating = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json")
 
@@ -93,6 +72,7 @@ def load_data():
     file_path = "Lottery_Cash_4_Life_Winning_Numbers__Beginning_2014.csv"
     try:
         df = pd.read_csv(file_path)
+        # 1. Convertir a formato fecha real
         df['Draw Date'] = pd.to_datetime(df['Draw Date'])
         return df
     except FileNotFoundError: return None
@@ -111,12 +91,19 @@ st.sidebar.success("**Estado:** Sistema Activo 🟢")
 
 # --- 6. LÓGICA PRINCIPAL ---
 if df is not None:
+    # Preprocesamiento para cálculos
     df['DrawDate_Ordinal'] = df['Draw Date'].map(dt.datetime.toordinal)
     try:
         nums = df["Winning Numbers"].str.split(" ", expand=True)
         for i in range(5):
             df[f'Num{i+1}'] = pd.to_numeric(nums[i])
     except: pass
+
+    # --- AQUI EL TRUCO PARA QUITAR LA HORA ---
+    # Creamos una copia para mostrar en la tabla sin afectar los cálculos
+    df_display = df.copy()
+    # Convertimos la fecha a solo "Fecha" (sin horas)
+    df_display['Draw Date'] = df_display['Draw Date'].dt.date 
 
     # === PESTAÑA INICIO ===
     if menu == "🏠 Inicio":
@@ -160,16 +147,20 @@ if df is not None:
                 * Vergaray Colonia, José Francisco
                 """)
 
-    # === PESTAÑA ANÁLISIS ===
+    # === PESTAÑA ANÁLISIS (CORREGIDA) ===
     elif menu == "📊 Análisis Histórico":
         st.header("📊 Base de Datos Histórica")
-        st.markdown("Exploración de la integridad de los datos recolectados.")
+        st.markdown("Exploración completa de los datos recolectados.")
+        
         c1, c2 = st.columns([3, 1])
         with c1:
-            st.dataframe(df.head(15), use_container_width=True)
+            # AQUI ESTÁ EL CAMBIO: Quitamos .head(15) para mostrar TODO
+            # Streamlit pone scroll automático si son muchos datos
+            st.dataframe(df_display[['Draw Date', 'Winning Numbers', 'Cash Ball']], use_container_width=True)
         with c2:
             st.metric("Registros Totales", f"{len(df):,}")
-            st.metric("Variables", "7")
+            st.metric("Años Analizados", f"{2014} - {dt.date.today().year}")
+            st.info("💡 Puedes deslizar (scroll) sobre la tabla para ver los registros antiguos.")
 
     # === PESTAÑA PREDICCIÓN ===
     elif menu == "🔮 Predicción (Regresión)":
@@ -188,7 +179,6 @@ if df is not None:
             st.markdown("### ⚙️ Configuración")
             tomorrow = dt.date.today() + dt.timedelta(days=1)
             fecha_input = st.date_input("Fecha del Sorteo:", tomorrow)
-            
             predict_btn = st.button("🚀 Ejecutar Modelo Predictivo")
             
         with c_anim:
@@ -196,8 +186,7 @@ if df is not None:
             
         if predict_btn:
             with c_anim:
-                if lottie_calculating: 
-                    st_lottie(lottie_calculating, height=180, key="calc")
+                if lottie_calculating: st_lottie(lottie_calculating, height=180, key="calc")
             
             with st.spinner("Procesando algoritmos..."):
                 time.sleep(2.5) 
