@@ -12,7 +12,7 @@ from sklearn.metrics import r2_score
 # --- 1. CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Predicción Cash4Life", layout="wide", page_icon="💰")
 
-# --- 2. ESTILOS CSS "EFECTO POP" ---
+# --- 2. ESTILOS CSS ---
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;}
@@ -24,36 +24,34 @@ st.markdown("""
         background-attachment: fixed;
     }
     
-    /* EFECTO DE ZOOM (POP) EN BOTONES Y TARJETAS */
+    /* EFECTO DE ZOOM EN BOTONES */
     div.stButton > button:hover {
-        transform: scale(1.05); /* Aumenta tamaño 5% */
-        background-color: #008000;
+        transform: scale(1.03);
         box-shadow: 0 8px 15px rgba(0,0,0,0.2);
         transition: all 0.3s ease;
     }
     
     .block-container {
         background-color: #ffffff;
-        border-radius: 25px;
-        padding: 3rem;
+        border-radius: 20px;
+        padding: 2.5rem;
         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         border: 1px solid #e0e0e0;
-        transition: transform 0.3s;
     }
     
-    /* ESTILOS DE TEXTO */
     h1 { color: #2e7d32; font-family: 'Helvetica', sans-serif; }
-    div[data-testid="stMetricValue"] { font-size: 26px; color: #1b5e20; font-weight: bold; }
+    h3 { color: #388e3c; }
     
-    /* BOTÓN BASE */
+    /* BOTONES */
     div.stButton > button {
         background: linear-gradient(to right, #43a047, #66bb6a);
-        color: white; border-radius: 12px; border: none;
-        padding: 12px 28px; font-size: 16px; font-weight: 600; 
+        color: white; border-radius: 10px; border: none;
+        padding: 12px 24px; font-size: 16px; font-weight: 600; 
         box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%;
     }
     
-    .intro-text { font-size: 18px; color: #424242; text-align: justify; line-height: 1.6; }
+    .text-justify { text-align: justify; font-size: 17px; color: #424242; line-height: 1.6; }
+    .highlight { background-color: #e8f5e9; padding: 15px; border-radius: 10px; border-left: 5px solid #43a047; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -68,7 +66,7 @@ def load_lottieurl(url):
 lottie_robot_intro = load_lottieurl("https://lottie.host/61730045-8c08-4171-8720-c81b37d4566c/2j1y7v3XlQ.json")
 lottie_calculating = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json")
 
-# --- 4. DATA ---
+# --- 4. CARGA DE DATOS ---
 @st.cache_data
 def load_data():
     file_path = "Lottery_Cash_4_Life_Winning_Numbers__Beginning_2014.csv"
@@ -88,15 +86,20 @@ menu = st.sidebar.radio(
     ["🏠 Inicio", "📊 Análisis Histórico", "🔮 Predicción (Regresión)", "🟢 Clasificación (Cash Ball)"]
 )
 st.sidebar.markdown("---")
-st.sidebar.caption("Actualización de Datos: Manual (GitHub)")
+st.sidebar.info("**Semestre:** 2025-II\n**Estado:** Sistema Activo 🟢")
 
-# --- 6. APP ---
+# --- 6. APP PRINCIPAL ---
 if df is not None:
+    # Preprocesamiento general
     df['DrawDate_Ordinal'] = df['Draw Date'].map(dt.datetime.toordinal)
+    # Extraer números individuales para análisis
     try:
-        nums = df["Winning Numbers"].str.split(" ", expand=True)
+        nums_split = df["Winning Numbers"].str.split(" ", expand=True)
+        cols_nums = []
         for i in range(5):
-            df[f'Num{i+1}'] = pd.to_numeric(nums[i])
+            col_name = f'Num{i+1}'
+            df[col_name] = pd.to_numeric(nums_split[i])
+            cols_nums.append(col_name)
     except: pass
 
     # === INICIO ===
@@ -106,20 +109,20 @@ if df is not None:
             st.title("💸 Sistema Predictivo Cash4Life")
             st.markdown("### 🎓 Proyecto de Aprendizaje Estadístico")
             st.markdown("---")
+            
             st.markdown("""
-            <div class="intro-text">
-            Bienvenido. Este sistema utiliza <b>Machine Learning</b> para analizar la lotería Cash4Life.
+            <div class="text-justify">
+            Bienvenido a la plataforma de análisis inteligente de loterías. Este proyecto nace de la necesidad de aplicar 
+            conceptos teóricos de <b>Estadística y Machine Learning</b> sobre un escenario real y complejo: el azar.
             <br><br>
-            <b>Nota sobre la Data:</b> Este sistema opera con una base de datos estática (CSV) cargada en el servidor. 
-            Las predicciones se basan en el comportamiento histórico de los sorteos hasta la fecha de la última actualización.
+            Analizamos miles de sorteos históricos (2014-Presente) de la lotería de Nueva York para responder una pregunta clave:
+            <i>¿Es posible identificar patrones matemáticos en un sistema diseñado para ser aleatorio?</i>
             </div>
             """, unsafe_allow_html=True)
             
             st.write("")
-            c1, c2 = st.columns(2)
-            c1.info("📈 **Regresión Lineal:**\nDetecta tendencias temporales.")
-            c2.success("🤖 **Clasificación IA:**\nCalcula probabilidad de Cash Ball.")
-            
+            st.markdown('<div class="highlight"><b>🛠️ Metodología Aplicada:</b><br>Utilizamos la librería <i>Scikit-Learn</i> de Python para entrenar modelos supervisados con datos históricos, buscando minimizar el error cuadrático medio (MSE) en las predicciones.</div>', unsafe_allow_html=True)
+
             hoy = dt.date.today()
             prox = hoy + dt.timedelta(days=1)
             st.warning(f"📅 **Próximo Sorteo Oficial:** Mañana, {prox.strftime('%d-%m-%Y')}")
@@ -138,22 +141,54 @@ if df is not None:
                 * Vergaray Colonia, José Francisco
                 """)
 
-    # === ANÁLISIS ===
+    # === ANÁLISIS HISTÓRICO (MEJORADO CON TABLAS) ===
     elif menu == "📊 Análisis Histórico":
-        st.header("📊 Base de Datos Histórica")
+        st.header("📊 Exploración de Datos")
+        st.markdown("""
+        <div class="text-justify">
+        En esta sección realizamos la Minería de Datos. Analizamos la distribución de los números ganadores para detectar
+        qué bolas tienen mayor frecuencia de aparición ("Números Calientes").
+        </div>
+        """, unsafe_allow_html=True)
+        st.write("")
+
+        # TAB 1: DATOS CRUDOS
+        tab1, tab2 = st.tabs(["📄 Base de Datos Completa", "📈 Análisis de Frecuencia"])
         
-        c1, c2 = st.columns([3, 1])
-        with c1:
-            # Mostramos todo, Streamlit pone scroll automático
-            st.dataframe(df, use_container_width=True)
-        with c2:
-            st.metric("Total Registros", f"{len(df):,}")
-            st.info("ℹ️ Para actualizar estos datos, cargue el nuevo archivo CSV en el repositorio de GitHub.")
+        with tab1:
+            c1, c2 = st.columns([3, 1])
+            with c1:
+                st.dataframe(df, use_container_width=True, height=400)
+            with c2:
+                st.metric("Total Registros", f"{len(df):,}")
+                st.info("ℹ️ Dataset estático actualizado al periodo 2025-II.")
+
+        # TAB 2: ESTADÍSTICAS (LO QUE PEDISTE)
+        with tab2:
+            st.subheader("🏆 Números Más Frecuentes")
+            # Unir todos los números en una sola lista para contar frecuencia
+            all_numbers = pd.concat([df[f'Num{i}'] for i in range(1, 6)])
+            freq_counts = all_numbers.value_counts().head(10)
+            
+            col_chart, col_table = st.columns([2, 1])
+            with col_chart:
+                st.bar_chart(freq_counts, color="#4CAF50")
+            with col_table:
+                st.write("**Top 10 Números:**")
+                st.dataframe(freq_counts, use_container_width=True)
 
     # === PREDICCIÓN (REGRESIÓN) ===
     elif menu == "🔮 Predicción (Regresión)":
         st.header("🔮 Predicción de Tendencia")
-        st.markdown("Modelo: **Regresión Lineal Simple** | Variable: **Primer Número**")
+        
+        # EXPLICACIÓN TÉCNICA
+        with st.expander("📘 ¿Cómo funciona este modelo? (Explicación Técnica)"):
+            st.markdown("""
+            Utilizamos un modelo de **Regresión Lineal Simple**.
+            1. Convertimos la fecha del sorteo a un número ordinal (e.g., 738000).
+            2. Entrenamos el modelo (`model.fit`) para encontrar una línea recta que minimice la distancia entre la fecha y el primer número ganador.
+            3. El resultado nos muestra la tendencia central del sorteo.
+            """)
         
         X = df[['DrawDate_Ordinal']]
         y = df['Num1']
@@ -162,13 +197,10 @@ if df is not None:
         r2 = r2_score(y, model.predict(X))
         
         c_input, c_anim = st.columns([1, 1])
-        
         with c_input:
-            # SECCIÓN LIMPIA (SIN TÍTULO "CONFIGURACIÓN")
             tomorrow = dt.date.today() + dt.timedelta(days=1)
-            st.write("Seleccione la fecha para la simulación:")
-            fecha_input = st.date_input("", tomorrow, label_visibility="collapsed")
-            
+            st.write("##### Configuración de Simulación:")
+            fecha_input = st.date_input("Fecha Objetivo:", tomorrow)
             predict_btn = st.button("🚀 Ejecutar Modelo Predictivo")
             
         with c_anim:
@@ -181,10 +213,12 @@ if df is not None:
             with st.spinner("La IA está calculando probabilidades..."):
                 time.sleep(2)
             
+            # Predicción Num1
             pred_val = model.predict([[dt.datetime.toordinal(fecha_input)]])[0]
             n1 = int(round(pred_val))
             n1 = max(1, min(60, n1))
             
+            # Simulación Resto
             resto = np.random.choice(list(set(range(1, 61)) - {n1}), 4, replace=False)
             resto.sort()
             
@@ -197,19 +231,28 @@ if df is not None:
             b4.metric("Bola 4", resto[2])
             b5.metric("Bola 5", resto[3])
             
-            st.caption(f"R²: {r2:.5f}")
-            st.info("💡 **Nota Científica:** El modelo predice un valor constante cercano al promedio histórico. Esto confirma estadísticamente que los sorteos son aleatorios y no siguen una tendencia lineal predecible.")
+            st.caption(f"R² (Coeficiente de Determinación): {r2:.5f}")
+            st.info("💡 **Conclusión del Modelo:** La baja correlación (R² cercano a 0) valida la hipótesis nula: los sorteos son eventos independientes y aleatorios.")
 
     # === CLASIFICACIÓN ===
     elif menu == "🟢 Clasificación (Cash Ball)":
         st.header("🟢 IA: Clasificación Cash Ball")
-        st.write("Ingrese la combinación ganadora principal:")
+        
+        # EXPLICACIÓN TÉCNICA
+        with st.expander("📘 ¿Cómo funciona este modelo? (Explicación Técnica)"):
+            st.markdown("""
+            Utilizamos un algoritmo de **Árbol de Decisión (Decision Tree Classifier)**.
+            * El modelo analiza las combinaciones de los 5 números principales históricos.
+            * Aprende qué 'Cash Ball' (1, 2, 3 o 4) suele aparecer con ciertos patrones numéricos.
+            * Al ingresar nuevos números, el árbol recorre sus ramas para sugerir la clase más probable.
+            """)
         
         X = df[['Num1', 'Num2', 'Num3', 'Num4', 'Num5']]
         y = df['Cash Ball']
         clf = DecisionTreeClassifier(max_depth=5)
         clf.fit(X, y)
         
+        st.write("##### Ingrese la combinación ganadora principal:")
         c1, c2, c3, c4, c5 = st.columns(5)
         n1 = c1.number_input("B1", 1, 60, 5)
         n2 = c2.number_input("B2", 1, 60, 10)
