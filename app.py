@@ -9,10 +9,10 @@ from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import r2_score
 
-# CONFIGURACIÓN DE PÁGINA 
+# --- 1. CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Predicción Cash4Life", layout="wide", page_icon="💰")
 
-#  ESTILOS 
+# --- 2. ESTILOS CSS ---
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;}
@@ -52,7 +52,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-#  RECURSOS
+# --- 3. RECURSOS ---
 def load_lottieurl(url):
     try:
         r = requests.get(url)
@@ -63,7 +63,7 @@ def load_lottieurl(url):
 lottie_robot_intro = load_lottieurl("https://lottie.host/61730045-8c08-4171-8720-c81b37d4566c/2j1y7v3XlQ.json")
 lottie_calculating = load_lottieurl("https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json")
 
-# CARGA DE DATOS
+# --- 4. CARGA DE DATOS ---
 @st.cache_data
 def load_data():
     file_path = "Lottery_Cash_4_Life_Winning_Numbers__Beginning_2014.csv"
@@ -75,12 +75,12 @@ def load_data():
 
 df = load_data()
 
-#  MENÚ 
+# --- 5. MENÚ ---
 st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2454/2454269.png", width=90)
 st.sidebar.title("Menú Principal")
 menu = st.sidebar.radio(
     "Navegación:",
-    ["🏠 Inicio", " Análisis Histórico", " Predicción (Regresión)", " Clasificación (Cash Ball)"]
+    ["🏠 Inicio", "📊 Análisis Histórico", "🔮 Predicción (Regresión)", "🟢 Clasificación (Cash Ball)"]
 )
 st.sidebar.markdown("---")
 st.sidebar.info("**Semestre:** 2025-II\n**Estado:** Sistema Activo 🟢")
@@ -98,12 +98,12 @@ if df is not None:
             cols_nums.append(col_name)
     except: pass
 
-    #  INICIO 
-    if menu == " Inicio":
+    # === INICIO ===
+    if menu == "🏠 Inicio":
         col_text, col_anim = st.columns([2, 1])
         with col_text:
-            st.title(" Sistema Predictivo Cash4Life")
-            st.markdown("###  Proyecto de Aprendizaje Estadístico")
+            st.title("💸 Sistema Predictivo Cash4Life")
+            st.markdown("### 🎓 Proyecto de Aprendizaje Estadístico")
             st.markdown("---")
             
             st.markdown("""
@@ -137,7 +137,7 @@ if df is not None:
                 * Vergaray Colonia, José Francisco
                 """)
 
-    #  ANÁLISIS HISTÓRICO 
+    # === ANÁLISIS HISTÓRICO (CORREGIDO) ===
     elif menu == "📊 Análisis Histórico":
         st.header("📊 Exploración de Datos")
         st.markdown("""
@@ -180,9 +180,9 @@ if df is not None:
                 st.write("**Top 10 Números:**")
                 st.dataframe(freq_counts, use_container_width=True)
 
-    # PREDICCIÓN (REGRESIÓN)
-    elif menu == " Predicción (Regresión)":
-        st.header(" Predicción de Tendencia")
+    # === PREDICCIÓN (REGRESIÓN) ===
+    elif menu == "🔮 Predicción (Regresión)":
+        st.header("🔮 Predicción de Tendencia")
         
         with st.expander("📘 ¿Cómo funciona este modelo? (Explicación Técnica)"):
             st.markdown("""
@@ -234,9 +234,9 @@ if df is not None:
             st.caption(f"R² (Coeficiente de Determinación): {r2:.5f}")
             st.info("💡 **Conclusión del Modelo:** La baja correlación (R² cercano a 0) valida la hipótesis nula: los sorteos son eventos independientes y aleatorios.")
 
-    #  CLASIFICACIÓN 
-    elif menu == " Clasificación (Cash Ball)":
-        st.header(" IA: Clasificación Cash Ball")
+    # === CLASIFICACIÓN ===
+    elif menu == "🟢 Clasificación (Cash Ball)":
+        st.header("🟢 IA: Clasificación Cash Ball")
         
         with st.expander("📘 ¿Cómo funciona este modelo? (Explicación Técnica)"):
             st.markdown("""
@@ -266,5 +266,3 @@ if df is not None:
 
 else:
     st.error("⚠️ Error: No se encontró el dataset en GitHub.")
-
-
