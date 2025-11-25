@@ -1,15 +1,15 @@
-# 💰 Análisis Estadístico y Predicción: Lotería Cash4Life
+#  Análisis Estadístico y Predicción: Lotería Cash4Life
 
 ![Python](https://img.shields.io/badge/Python-3.9-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-App-red)
 ![Machine Learning](https://img.shields.io/badge/Model-Scikit_Learn-orange)
 
-## 📌 Descripción del Proyecto
+##  Descripción del Proyecto
 Este proyecto desarrolla un análisis estadístico profundo sobre los resultados históricos de la lotería **Cash4Life (New York)** desde el año 2014. A pesar de que los sorteos se diseñan bajo principios de aleatoriedad, esta investigación busca identificar patrones, sesgos o tendencias utilizando técnicas de **Machine Learning**.
 
 El sistema permite visualizar datos, realizar predicciones de regresión lineal y clasificar resultados probables mediante árboles de decisión.
 
-## 👥 Autores
+##  Autores
 **Universidad Privada Antenor Orrego - Ingeniería de Sistemas e IA**
 * Bernabé Arce, James Franco
 * Coronado Medina, Sergio Adrian
@@ -20,7 +20,7 @@ El sistema permite visualizar datos, realizar predicciones de regresión lineal 
 * Mori Galarza, Franco
 * Vergaray Colonia, José Francisco
 
-## 🚀 Funcionalidades del Sistema
+## Funcionalidades del Sistema
 El aplicativo web cuenta con tres módulos principales:
 
 ### 1. Análisis Exploratorio de Datos
@@ -34,7 +34,7 @@ Utiliza un modelo de **Regresión Lineal Simple** para analizar la relación ent
 ### 3. Clasificación (Cash Ball)
 Implementa un algoritmo de **Árbol de Decisión** para predecir el número especial (*Cash Ball*) basándose en los 5 números principales sorteados.
 
-## 🛠️ Tecnologías Usadas
+##  Tecnologías Usadas
 * **Lenguaje:** Python
 * **Interfaz Web:** Streamlit
 * **Ciencia de Datos:** Pandas, Scikit-Learn, Numpy
