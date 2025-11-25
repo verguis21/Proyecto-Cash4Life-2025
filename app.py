@@ -153,20 +153,19 @@ if df is not None:
         with tab1:
             c1, c2 = st.columns([3, 1])
             with c1:
-                # --- CORRECCIÓN DE FECHA Y COLUMNAS ---
-                # 1. Crear copia para visualización
+                # Crear copia para visualización
                 df_vis = df.copy()
-                # 2. Convertir fecha a texto limpio (YYYY-MM-DD) para eliminar la hora
+                # Convertir fecha a texto limpio (YYYY-MM-DD) para eliminar la hora
                 df_vis['Draw Date'] = df_vis['Draw Date'].dt.strftime('%Y-%m-%d')
                 
-                # 3. Filtrar columnas (Ocultar DrawDate_Ordinal)
+                # Filtrar columnas (Ocultar DrawDate_Ordinal)
                 cols_to_show = ['Draw Date', 'Winning Numbers', 'Cash Ball', 'Num1', 'Num2', 'Num3', 'Num4', 'Num5']
                 
                 # Mostrar solo las columnas limpias
                 st.dataframe(df_vis[cols_to_show], use_container_width=True, height=400)
             with c2:
                 st.metric("Total Registros", f"{len(df):,}")
-                st.info("ℹ️ Dataset estático actualizado al periodo 2025-II.")
+                st.info("ℹ️ Dataset estático actualizado al periodo 2025.")
 
         with tab2:
             st.subheader("🏆 Números Más Frecuentes")
@@ -266,3 +265,4 @@ if df is not None:
 
 else:
     st.error("⚠️ Error: No se encontró el dataset en GitHub.")
+
