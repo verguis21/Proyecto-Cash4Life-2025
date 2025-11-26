@@ -14,19 +14,19 @@ from sklearn.metrics import r2_score, confusion_matrix
 # --- 1. CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Predicción Cash4Life", layout="wide", page_icon="💰")
 
-# --- 2. ESTILOS CSS (CORREGIDO PARA IPHONE) ---
+# --- 2. ESTILOS CSS (PROFESIONAL) ---
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* FONDO DEGRADADO SUAVE */
+    /* FONDO */
     [data-testid="stAppViewContainer"] {
         background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
         background-attachment: fixed;
     }
     
-    /* TARJETAS BLANCAS CON TEXTO OSCURO */
+    /* CONTENEDOR */
     .block-container {
         background-color: #ffffff;
         border-radius: 20px;
@@ -35,42 +35,48 @@ st.markdown("""
         border: 1px solid #e0e0e0;
     }
     
-    /* FUERZA COLOR DE TEXTO (SOLUCIÓN IOS/DARK MODE) */
+    /* TEXTO OSCURO PARA TODOS (FIX IPHONE) */
     h1, h2, h3, h4, h5, h6, p, li, span, div {
         color: #333333 !important;
         font-family: 'Helvetica', sans-serif;
     }
     
-    /* TÍTULOS EN VERDE */
     h1 { color: #2e7d32 !important; }
     h2, h3 { color: #388e3c !important; }
     
-    /* BOTONES ESTILIZADOS */
+    /* BOTONES */
     div.stButton > button {
         background: linear-gradient(to right, #43a047, #66bb6a);
         color: white !important;
-        border-radius: 10px; border: none;
-        padding: 12px 24px; font-size: 16px; font-weight: 600; 
+        border-radius: 10px; padding: 12px 24px; font-weight: 600; 
         box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%;
         transition: transform 0.2s;
     }
     div.stButton > button:hover { transform: scale(1.03); }
     
-    /* CAJAS DE TEXTO EXPLICATIVO */
+    /* CAJAS DE EXPLICACIÓN (ESTILO TESIS) */
     .explanation-box { 
         background-color: #f1f8e9; 
         padding: 15px; 
-        border-radius: 10px; 
+        border-radius: 8px; 
         border-left: 5px solid #8bc34a; 
-        margin-top: 15px;
-        margin-bottom: 15px;
+        margin-top: 15px; margin-bottom: 15px;
+        font-size: 15px;
+    }
+    .science-box {
+        background-color: #e3f2fd;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 5px solid #2196f3;
+        margin-top: 10px;
+        font-size: 15px;
     }
     .warning-box {
         background-color: #fff3cd;
         padding: 15px;
-        border-radius: 10px;
+        border-radius: 8px;
         border-left: 5px solid #ffc107;
-        margin-top: 10px;
+        margin-bottom: 20px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -108,9 +114,8 @@ menu = st.sidebar.radio(
 st.sidebar.markdown("---")
 st.sidebar.info("**Semestre:** 2025-II\n**Estado:** Sistema Activo 🟢")
 
-# --- 6. LÓGICA PRINCIPAL ---
+# --- 6. APP ---
 if df is not None:
-    # Preprocesamiento
     df['DrawDate_Ordinal'] = df['Draw Date'].map(dt.datetime.toordinal)
     try:
         nums_split = df["Winning Numbers"].str.split(" ", expand=True)
@@ -127,11 +132,10 @@ if df is not None:
             st.markdown("---")
             st.markdown("""
             <div style="text-align: justify;">
-            Bienvenido al sistema de <b>Aprendizaje Estadístico</b>. Este proyecto analiza miles de sorteos de la lotería 
-            Cash4Life (2014-Presente) utilizando algoritmos de <b>Machine Learning</b> para desafiar la aleatoriedad.
+            <b>Investigación:</b> Análisis de patrones estocásticos en loterías mediante Machine Learning.
             <br><br>
-            <b>Objetivo Científico:</b> Determinar si la distribución de los números ganadores sigue un patrón matemático 
-            predecible o si obedece estrictamente al azar (distribución uniforme).
+            Este sistema no es una herramienta de juego, sino un instrumento científico para validar la <b>Hipótesis Nula de Aleatoriedad</b>. 
+            Procesamos miles de sorteos históricos para determinar si existen sesgos matemáticos explotables.
             </div>
             """, unsafe_allow_html=True)
             
@@ -147,7 +151,7 @@ if df is not None:
     elif menu == "📊 Análisis Histórico":
         st.header("📊 Exploración de Datos")
         
-        tab1, tab2, tab3 = st.tabs(["📄 Base de Datos", "📈 Frecuencias", "🔥 Mapa de Correlación"])
+        tab1, tab2, tab3 = st.tabs(["📄 Datos", "📈 Frecuencias", "🔥 Mapa de Correlación"])
         
         with tab1:
             df_vis = df.copy()
@@ -156,6 +160,12 @@ if df is not None:
         
         with tab2:
             st.subheader("🏆 Números Más Frecuentes")
+            st.markdown("""
+            <div class="explanation-box">
+            <b>📘 Interpretación:</b> En una aleatoriedad perfecta, todas las barras serían iguales. 
+            Las diferencias de altura muestran la varianza natural de la muestra histórica ("Números Calientes").
+            </div>
+            """, unsafe_allow_html=True)
             all_nums = pd.concat([df[f'Num{i}'] for i in range(1, 6)])
             freq = all_nums.value_counts().head(10)
             st.bar_chart(freq, color="#4CAF50")
@@ -163,37 +173,27 @@ if df is not None:
         with tab3:
             st.subheader("🔥 Mapa de Correlación (Heatmap)")
             st.markdown("""
-            <div class="explanation-box">
-            <b>📘 ¿Qué nos dice este gráfico?</b><br>
-            Muestra si existe relación matemática entre los números ganadores. 
-            <ul>
-            <li><b>Color Claro/Neutro:</b> Indica independencia (Aleatoriedad confirmada).</li>
-            <li><b>Color Oscuro/Intenso:</b> Indicaría un patrón sospechoso.</li>
-            </ul>
-            Este gráfico valida que las bolas salen de forma independiente.
+            <div class="science-box">
+            <b>🧪 Análisis de Independencia:</b><br>
+            • <b>Colores Claros:</b> Indican correlación cero (Independencia total).<br>
+            • <b>Colores Oscuros:</b> Indicarían dependencia (Patrón sospechoso).<br>
+            <b>Conclusión:</b> El predominio de colores claros valida científicamente que las bolas no se influyen entre sí.
             </div>
             """, unsafe_allow_html=True)
             
-            # Matriz de correlación
-            corr_cols = ['Num1', 'Num2', 'Num3', 'Num4', 'Num5', 'Cash Ball']
-            corr = df[corr_cols].corr()
-            
+            corr = df[['Num1', 'Num2', 'Num3', 'Num4', 'Num5', 'Cash Ball']].corr()
             fig, ax = plt.subplots(figsize=(8, 6))
             sns.heatmap(corr, annot=True, cmap="Greens", fmt=".2f", ax=ax)
             st.pyplot(fig)
 
-    # === PREDICCIÓN (REGRESIÓN) ===
+    # === PREDICCIÓN ===
     elif menu == "🔮 Predicción (Regresión)":
-        st.header("🔮 Predicción de Tendencia (Regresión)")
+        st.header("🔮 Predicción de Tendencia")
         
-        # --- MENSAJE IMPORTANTE QUE PEDISTE ---
         st.markdown("""
         <div class="warning-box">
-        <b>⚠️ NOTA IMPORTANTE SOBRE EL CÁLCULO:</b><br>
-        Este modelo utiliza <b>Inteligencia Artificial (Regresión Lineal)</b> para predecir matemáticamente 
-        <b>ÚNICAMENTE LA PRIMERA BOLA (Num1)</b>, basándose en la tendencia histórica de la fecha.<br><br>
-        Las bolas restantes (2, 3, 4 y 5) son generadas mediante <b>simulación estocástica (aleatoria)</b> para 
-        completar el ticket de juego, ya que estadísticamente dependen del azar puro.
+        <b>⚠️ NOTA TÉCNICA:</b> La IA utiliza <b>Regresión Lineal</b> para predecir la tendencia de la primera bola. 
+        Las bolas restantes (2-5) se generan por simulación estocástica para completar el ticket.
         </div>
         """, unsafe_allow_html=True)
         
@@ -208,41 +208,69 @@ if df is not None:
             fecha_input = st.date_input("Fecha Objetivo:", dt.date.today() + dt.timedelta(days=1))
             predict_btn = st.button("🚀 Calcular Predicción")
             
-        with c_anim:
-            anim_placeholder = st.empty()
-            
         if predict_btn:
             with c_anim:
                 if lottie_calc: st_lottie(lottie_calc, height=150, key="calc")
-            with st.spinner("Procesando modelo matemático..."):
+            with st.spinner("Procesando..."):
                 time.sleep(1.5)
 
-            # Predicción IA
-            pred_val = model.predict([[dt.datetime.toordinal(fecha_input)]])[0]
-            n1 = max(1, min(60, int(round(pred_val))))
-            
-            # Simulación del resto
+            # Predicción con explicación de decimales
+            pred_val_float = model.predict([[dt.datetime.toordinal(fecha_input)]])[0]
+            n1 = max(1, min(60, int(round(pred_val_float))))
             resto = np.sort(np.random.choice(list(set(range(1, 61)) - {n1}), 4, replace=False))
             
             st.markdown("---")
-            st.subheader(f"🎫 Ticket Generado")
+            st.subheader(f"🎫 Resultado del Modelo")
+            
+            # Explicación del redondeo
+            st.markdown(f"""
+            <div class="science-box">
+            <b>🧮 Cálculo Matemático vs. Realidad:</b><br>
+            La Regresión calculó el valor exacto de tendencia: <b>{pred_val_float:.4f}</b>.<br>
+            Como la lotería es discreta, el sistema lo interpreta como la bola: <b>{n1}</b>.
+            </div>
+            """, unsafe_allow_html=True)
+
             b1, b2, b3, b4, b5 = st.columns(5)
             b1.metric("Bola 1 (IA)", n1)
-            b2.metric("Bola 2 (Random)", resto[0])
-            b3.metric("Bola 3 (Random)", resto[1])
-            b4.metric("Bola 4 (Random)", resto[2])
-            b5.metric("Bola 5 (Random)", resto[3])
+            b2.metric("Bola 2", resto[0])
+            b3.metric("Bola 3", resto[1])
+            b4.metric("Bola 4", resto[2])
+            b5.metric("Bola 5", resto[3])
 
-            # Gráfico de Tendencia
-            st.markdown("### 📉 Análisis de Tendencia")
-            fig, ax = plt.subplots(figsize=(10, 3))
-            sample = df.sample(min(500, len(df)))
-            ax.scatter(sample['Draw Date'], sample['Num1'], color='#90CAF9', alpha=0.5, label='Datos Reales')
-            date_range = np.array([X.min(), X.max()]).reshape(-1, 1)
-            ax.plot([df['Draw Date'].min(), df['Draw Date'].max()], model.predict(date_range), color='red', linewidth=3, label='Tendencia IA')
-            ax.legend()
-            st.pyplot(fig)
-            st.caption(f"Coeficiente R²: {r2:.5f} (Confirma ausencia de tendencia lineal fuerte).")
+            st.markdown("### 📊 Justificación Gráfica")
+            tab_graph, tab_error = st.tabs(["📉 Línea de Tendencia", "📋 Análisis de Error"])
+            
+            with tab_graph:
+                fig, ax = plt.subplots(figsize=(10, 3))
+                sample = df.sample(min(500, len(df)))
+                ax.scatter(sample['Draw Date'], sample['Num1'], color='#90CAF9', alpha=0.5, label='Historial Real')
+                date_range = np.array([X.min(), X.max()]).reshape(-1, 1)
+                ax.plot([df['Draw Date'].min(), df['Draw Date'].max()], model.predict(date_range), color='red', linewidth=3, label='Predicción IA')
+                ax.legend()
+                st.pyplot(fig)
+                
+                st.markdown("""
+                <div class="explanation-box">
+                <b>💡 Interpretación:</b> La línea roja es casi <b>plana</b>. Esto demuestra visualmente que el paso del tiempo 
+                no afecta el resultado. La mejor predicción matemática es el promedio histórico.
+                </div>
+                """, unsafe_allow_html=True)
+
+            with tab_error:
+                last_5 = df.tail(5).copy()
+                last_5['Draw Date'] = last_5['Draw Date'].dt.strftime('%Y-%m-%d')
+                last_5['Predicción'] = model.predict(last_5[['DrawDate_Ordinal']]).round().astype(int)
+                last_5['Diferencia'] = abs(last_5['Num1'] - last_5['Predicción'])
+                st.dataframe(last_5[['Draw Date', 'Num1', 'Predicción', 'Diferencia']], use_container_width=True)
+                
+                st.markdown("""
+                <div class="science-box">
+                <b>🧪 ¿Por qué hay error?</b> Un error alto aquí es <b>bueno científicamente</b>. 
+                Confirma que los números reales saltan aleatoriamente lejos de la predicción promedio, 
+                validando que el sorteo no está manipulado.
+                </div>
+                """, unsafe_allow_html=True)
 
     # === CLASIFICACIÓN ===
     elif menu == "🟢 Clasificación (Cash Ball)":
@@ -253,7 +281,7 @@ if df is not None:
         clf = DecisionTreeClassifier(max_depth=5)
         clf.fit(X_class, y_class)
         
-        st.write("##### Ingrese la combinación:")
+        st.write("##### Combinación de entrada:")
         c1, c2, c3, c4, c5 = st.columns(5)
         n1 = c1.number_input("B1", 1, 60, 5)
         n2 = c2.number_input("B2", 1, 60, 10)
@@ -261,39 +289,39 @@ if df is not None:
         n4 = c4.number_input("B4", 1, 60, 30)
         n5 = c5.number_input("B5", 1, 60, 45)
         
-        if st.button("🎱 Predecir"):
-            input_data = [[n1,n2,n3,n4,n5]]
-            probs = clf.predict_proba(input_data)[0]
-            pred = clf.predict(input_data)[0]
+        if st.button("🎱 Analizar Patrón"):
+            probs = clf.predict_proba([[n1,n2,n3,n4,n5]])[0]
+            pred = clf.predict([[n1,n2,n3,n4,n5]])[0]
             
             st.success(f"Cash Ball Predicha: **{pred}**")
             
             tab_prob, tab_conf = st.tabs(["📊 Probabilidades", "🧩 Matriz de Confusión"])
             
             with tab_prob:
-                prob_df = pd.DataFrame({'Opción': [1,2,3,4], 'Probabilidad': probs})
-                st.bar_chart(prob_df.set_index('Opción'), color="#2196F3")
-                
-            with tab_conf:
+                prob_df = pd.DataFrame({'Bola': [1,2,3,4], 'Confianza': probs})
+                st.bar_chart(prob_df.set_index('Bola'), color="#2196F3")
                 st.markdown("""
                 <div class="explanation-box">
-                <b>📘 Matriz de Confusión:</b><br>
-                Esta tabla compara las predicciones del modelo contra la realidad histórica. 
-                Permite ver dónde se "equivoca" más la IA (Diagonal principal = Aciertos).
+                El gráfico muestra la <b>incertidumbre del modelo</b>. La IA no adivina, sino que asigna porcentajes 
+                de probabilidad a cada opción basándose en patrones pasados.
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # Matriz de Confusión real
+            with tab_conf:
                 y_pred_all = clf.predict(X_class)
                 cm = confusion_matrix(y_class, y_pred_all)
-                
                 fig_cm, ax_cm = plt.subplots()
                 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax_cm)
                 ax_cm.set_xlabel('Predicción IA')
                 ax_cm.set_ylabel('Valor Real')
                 st.pyplot(fig_cm)
+                
+                st.markdown("""
+                <div class="science-box">
+                <b>📘 Interpretación:</b> Esta matriz compara Aciertos vs. Errores. La dispersión fuera de la diagonal principal 
+                demuestra la dificultad inherente de clasificar eventos puramente aleatorios.
+                </div>
+                """, unsafe_allow_html=True)
 
 else:
     st.error("⚠️ Error: No se encontró el dataset en GitHub.")
-
-
